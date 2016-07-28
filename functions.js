@@ -3,9 +3,9 @@
  */
 
 /**
- * Gets time from td
- * @param time string
- * @returns {*}
+ * Gets time from td - Vakar, 10:24; Šodien, 12:12, 25 Jul, 21:00 ...
+ * @param {string} time
+ * @returns {moment}
  */
 function parseTime(time)
 {
@@ -25,12 +25,11 @@ function parseTime(time)
 
 /**
  * Return true if post is newer that it was last seen
- * @param postTime moment
- * @param lastSeenTime moment
+ * @param {moment} postTime
+ * @param {moment} lastSeenTime
  * @returns {boolean}
  */
 function isNewPost(postTime, lastSeenTime)
 {
-    console.log(postTime.format("YYYY-MM-DD HH:mm:ss"), lastSeenTime.format("YYYY-MM-DD HH:mm:ss"));
     return postTime.format("X") > lastSeenTime.format("X");
 }
