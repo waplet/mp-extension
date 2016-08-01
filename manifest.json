@@ -2,6 +2,9 @@
   "manifest_version": 2,
   "name": "MotoPower.lv new posts Extension",
   "version": "0.1",
+  "permissions": [
+    "storage"
+  ],
   "content_scripts": [
     {
       "matches": [
@@ -10,8 +13,7 @@
       ],
       "js": [
         "vendor/jquery-3.1.0.min.js",
-        "vendor/js.cookie.js",
-        "vendor/moment.min.js",
+        "vendor/moment.min.",
         "functions.js",
         "content.js"
       ]
