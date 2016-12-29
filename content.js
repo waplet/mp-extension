@@ -5,21 +5,30 @@ chrome.storage.sync.get("w_last_seen", function(lastSeenObject) {
     // acquired time
     var lastSeenTime = moment(lastSeenObject.w_last_seen || 0, "X");
     // getting all last posts
-    var lastPosts = $('table.forum_last_posts:first-child').find('tr');
 
-    // marking posts as new if matching criteria
-    $.each(lastPosts, function(i, post) {
-        // getting post link
-        var $post = $(post).find('td:first-child a.b11');
-        // getting post time part
-        var time = $(post).find('td.date').text().split(" / ")[0];
-        time = parseTime(time);
+    var lastPosts = document
+        .getElementsByClassName('forum_last_posts')[0]
+        .getElementsByTagName('tr');
 
-        // marking new posts
-        if (isNewPost(time, lastSeenTime)) {
-            $post.html('<span style="color:green;">[NEW]</span> ' + $post.html());
+    var lastPostsArr = [].slice.call(lastPosts); // hacks to turn HTMLCollection into Array
+
+    lastPostsArr.forEach(function (post, index) {
+
+        // getting post time
+        var postTime = post
+            .getElementsByClassName('date')[0]
+            .innerText.split(" / ")[0];
+
+        postTime = parseTime(postTime);
+
+        if (isNewPost(postTime, lastSeenTime)) {
+            // getting post node
+            var postNode = post
+                .getElementsByTagName('td')[0]
+                .getElementsByClassName('b11')[0];
+            postNode.innerHTML = '<span style="color:green;">[NEW]</span> ' + postNode.innerHTML;
         }
-    });
+    })
 
     // saving visit time
     chrome.storage.sync.set({w_last_seen: moment().format("X")});

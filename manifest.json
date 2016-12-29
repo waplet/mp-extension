@@ -1,10 +1,14 @@
 {
   "manifest_version": 2,
-  "name": "MotoPower.lv new posts Extension",
+  "name": "MotoPower.lv new posts extension",
   "version": "0.1",
+  "author": "waplet",
   "permissions": [
     "storage"
   ],
+  "icons": {
+    "80": "icon.png"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -12,7 +16,6 @@
         "*://www.motopower.lv/"
       ],
       "js": [
-        "vendor/jquery-3.1.0.min.js",
         "vendor/moment.min.js",
         "functions.js",
         "content.js"
