@@ -7,7 +7,10 @@ If any new post's datetime of the front page is greater than your last visit's t
 
 ![Usage of extension](https://i.imgur.com/R2S13YF.png)
 
-# Usage
+# Installation
+Download from Chrome extensions - https://chrome.google.com/webstore/detail/motopowerlv-new-posts-ext/nongpcmiikafghlimobegongialaileg
+
+# Manual installation
   * Download ZIP and Extract it in folder somewhere you might find it - https://github.com/waplet/mp-extension/archive/master.zip
   * To load extension in Chrome, open up chrome://extensions/ in your browser and click “Developer mode” in the top right. 
   * Now click “Load unpacked extension…” and select the extension’s directory. You should now see your extension in the list.
