@@ -13,7 +13,6 @@ chrome.storage.sync.get("w_last_seen", function(lastSeenObject) {
     var lastPostsArr = [].slice.call(lastPosts); // hacks to turn HTMLCollection into Array
 
     lastPostsArr.forEach(function (post, index) {
-
         // getting post time
         var postTime = post
             .getElementsByClassName('date')[0]
@@ -21,7 +20,7 @@ chrome.storage.sync.get("w_last_seen", function(lastSeenObject) {
 
         postTime = parseTime(postTime);
 
-        if (isNewPost(postTime, lastSeenTime)) {
+        if (isNewPost(postTime, lastSeenTime, moment())) {
             // getting post node
             var postNode = post
                 .getElementsByTagName('td')[0]

@@ -24,12 +24,13 @@ function parseTime(time)
 }
 
 /**
- * Return true if post is newer that it was last seen
+ * Return true if post is newer that it was last seen, and is "not newer" that current date
  * @param {moment} postTime
  * @param {moment} lastSeenTime
+ * @param {moment} now
  * @returns {boolean}
  */
-function isNewPost(postTime, lastSeenTime)
+function isNewPost(postTime, lastSeenTime, now)
 {
-    return postTime.format("X") > lastSeenTime.format("X");
+    return postTime.format("X") > lastSeenTime.format("X") && postTime.format("X") <= now.format("X");
 }
