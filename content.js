@@ -34,7 +34,7 @@ chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen"], function(lastSeenOb
                 wasNewPost = true;
             }
         }
-    })
+    });
 
     // We should set new last seen if if "temprorary" last seen exceeds 10 minutes, or some seconds
     if (temporaryLastSeen || !wasNewPost) {
@@ -46,7 +46,7 @@ chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen"], function(lastSeenOb
         }
     } else {
         chrome.storage.sync.set({
-            w_last_seen: moment().format("X"),
+            w_last_seen: lastSeenTime.format("X"),
             w_temp_last_seen: moment().format("X")
         });
     }
