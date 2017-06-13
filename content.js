@@ -4,10 +4,17 @@
 chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen"], function(lastSeenObject) {
     // acquired time
     var lastSeenTime = moment(lastSeenObject.w_last_seen || 0, "X");
-    var temporaryLastSeen = lastSeenObject.w_temp_last_seen || null;
+    var temporaryLastSeenTime = moment(lastSeenObject.w_temp_last_seen, "X") || null;
+
+    // When coming back after more than 10 minutes, and was previously set temporary lastSeen,
+    // make it as lastSeenTime
+    if (temporaryLastSeenTime) {
+        if (moment().diff(temporaryLastSeenTime, 'minutes') > 10) {
+            var lastSeenTime = temporaryLastSeenTime
+        }
+    }
 
     // getting all last posts
-
     var lastPosts = document
         .getElementsByClassName('forum_last_posts')[0]
         .getElementsByTagName('tr');
@@ -36,9 +43,9 @@ chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen"], function(lastSeenOb
         }
     });
 
-    // We should set new last seen if if "temprorary" last seen exceeds 10 minutes, or some seconds
-    if (temporaryLastSeen || !wasNewPost) {
-        if (moment().diff(moment(temporaryLastSeen, "X"), 'minutes') > 10 || !wasNewPost) {
+    // We should set new last seen if if "temprorary" last seen exceeds 10 minutes
+    if (temporaryLastSeenTime || !wasNewPost) {
+        if (moment().diff(temporaryLastSeenTime, 'minutes') > 10 || !wasNewPost) {
             chrome.storage.sync.set({
                 w_last_seen: moment().format("X"),
                 w_temp_last_seen: null
