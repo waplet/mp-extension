@@ -6,11 +6,11 @@ chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen"], function(lastSeenOb
     var lastSeenTime = moment(lastSeenObject.w_last_seen || 0, "X");
     var temporaryLastSeenTime = moment(lastSeenObject.w_temp_last_seen, "X") || null;
 
-    // When coming back after more than 10 minutes, and was previously set temporary lastSeen,
+    // When coming back after was previously set temporary lastSeen,
     // make it as lastSeenTime
     if (temporaryLastSeenTime) {
-        if (moment().diff(temporaryLastSeenTime, 'minutes') > 10) {
-            var lastSeenTime = temporaryLastSeenTime
+        if (moment().diff(temporaryLastSeenTime, 'minutes') <= 10) {
+            lastSeenTime = temporaryLastSeenTime;            
         }
     }
 
@@ -43,18 +43,24 @@ chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen"], function(lastSeenOb
         }
     });
 
-    // We should set new last seen if if "temprorary" last seen exceeds 10 minutes
-    if (temporaryLastSeenTime || !wasNewPost) {
-        if (moment().diff(temporaryLastSeenTime, 'minutes') > 10 || !wasNewPost) {
-            chrome.storage.sync.set({
-                w_last_seen: moment().format("X"),
-                w_temp_last_seen: null
-            });
-        }
+    // We should set new last seen if if "temporary" last seen exceeds 10 minutes
+    var timestampNow = moment().format("X");
+    if (!wasNewPost) {
+        // If no new posts
+        chrome.storage.sync.set({
+            w_last_seen: timestampNow,
+            w_temp_last_seen: timestampNow
+        });
+    } else if (temporaryLastSeenTime && moment().diff(temporaryLastSeenTime, 'minutes') <= 10) {
+        // Maintain same temporaryLastSeenTime
+        chrome.storage.sync.set({
+            w_last_seen: timestampNow,
+            w_temp_last_seen: temporaryLastSeenTime.format("X")
+        });
     } else {
         chrome.storage.sync.set({
-            w_last_seen: lastSeenTime.format("X"),
-            w_temp_last_seen: moment().format("X")
+            w_last_seen: timestampNow,
+            w_temp_last_seen: timestampNow
         });
     }
 });
