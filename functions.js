@@ -7,14 +7,13 @@
  * @param {string} time
  * @returns {moment}
  */
-function parseTime(time)
-{
+function parseTime(time) {
     var timeParts = time.split(", ");
     var newTimePart = timeParts[1];
     var newDatePart;
-    if (timeParts[0] == "Vakar") {
+    if (timeParts[0] === "Vakar") {
         newDatePart = moment().subtract(1, "day").format("D MMM");
-    } else if(timeParts[0] == "Šodien") {
+    } else if (timeParts[0] === "Šodien") {
         newDatePart = moment().format("D MMM");
     } else {
         newDatePart = timeParts[0];
@@ -24,13 +23,100 @@ function parseTime(time)
 }
 
 /**
- * Return true if post is newer that it was last seen, and is "not newer" that current date
- * @param {moment} postTime
- * @param {moment} lastSeenTime
- * @param {moment} now
- * @returns {boolean}
+ * @param {{}} lastSeenObject
+ * @param {int|null} lastSeenObject.w_last_seen
+ * @param {int|null} lastSeenObject.w_temp_last_seen
  */
-function isNewPost(postTime, lastSeenTime, now)
-{
-    return postTime.format("X") > lastSeenTime.format("X") && postTime.format("X") <= now.format("X");
+function storeLastSeenObject(lastSeenObject) {
+    chrome.storage.sync.set({
+        w_last_seen: lastSeenObject.w_last_seen,
+        w_temp_last_seen: lastSeenObject.w_temp_last_seen,
+    });
+}
+
+/**
+ * @returns {Post[]}
+ */
+function getPosts() {
+    // getting all last posts
+    var lastPosts = document
+        .getElementsByClassName('forum_last_posts')[0]
+        .getElementsByTagName('tr');
+
+    var lastPostsArr = [].slice.call(lastPosts); // hacks to turn HTMLCollection into Array
+
+    return lastPostsArr.map(function (postRow) {
+        var postTime = postRow
+            .getElementsByClassName('date')[0]
+            .innerText.split(" / ")[0];
+        postTime = parseTime(postTime);
+
+        var postNode = postRow
+            .getElementsByTagName('td')[0]
+            .getElementsByClassName('b11')[0];
+
+        return new Post(postTime, postNode);
+    });
+}
+
+/**
+ * @param {Post[]} posts
+ * @param {function} storeFunction
+ * @param {moment} momentNow
+ * @param {{}} lastSeenObject
+ * @param {int|null} lastSeenObject.w_last_seen
+ * @param {int|null} lastSeenObject.w_temp_last_seen
+ */
+function main(posts, storeFunction, momentNow, lastSeenObject) {
+    // acquired time
+    var lastSeenTime = moment(lastSeenObject.w_last_seen || 0, "X");
+    var temporaryLastSeenTime = moment(lastSeenObject.w_temp_last_seen, "X") || null;
+
+    // When coming back after was previously set temporary lastSeen,
+    // make it as lastSeenTime
+    var diff;
+    if (temporaryLastSeenTime) {
+        diff = momentNow.diff(temporaryLastSeenTime, 'minutes');
+        if (diff <= 10) {
+            lastSeenTime = temporaryLastSeenTime;
+        }
+    }
+
+    var wasNewPost = false;
+
+    posts.forEach(function (post) {
+        if (post.isNew(lastSeenTime, momentNow)) {
+            post.markAsNew();
+            wasNewPost = true;
+        }
+    });
+
+    // We should set new last seen if if "temporary" last seen exceeds 10 minutes
+    var timestampNow = momentNow.format("X");
+    if (!wasNewPost) {
+        // If no new posts
+        storeFunction({
+            w_last_seen: timestampNow,
+            w_temp_last_seen: null
+        });
+    } else if (temporaryLastSeenTime && diff <= 10) {
+        // Maintain same temporaryLastSeenTime
+        storeFunction({
+            w_last_seen: timestampNow,
+            w_temp_last_seen: temporaryLastSeenTime.format("X")
+        });
+    } else {
+        storeFunction({
+            w_last_seen: timestampNow,
+            w_temp_last_seen: timestampNow
+        });
+    }
+}
+
+function dttm(hours) {
+    return dateTimeToMoment(hours);
+}
+
+function dateTimeToMoment(hours) {
+    return moment(hours || 0, "HH:mm")
 }

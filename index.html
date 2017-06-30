@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+</head>
+<body>
+<div id="testArea"></div>
+
+<script src="vendor/moment.min.js" type="text/javascript"></script>
+<script src="Post.js" type="text/javascript"></script>
+<script src="functions.js" type="text/javascript"></script>
+
+// Need to create tests
+<script>
+    var postTimes = [
+        "14:00",
+        "14:01",
+        "14:02",
+        "14:04",
+        "14:11",
+        "23:11"
+    ];
+
+    var momentNow = moment("14:59", "HH:mm");
+
+    // lastSeen, tempLastSeen, Now
+    var timeTests = [
+        [null, null, momentNow],
+        ["13:59", null],
+        ["14:00", null],
+        ["14:01", "14:00"],
+        ["14:05", "14:00"],
+        ["14:35", "14:00"],
+        ["14:40", null],
+        ["23:10", null],
+        ["23:20", null]
+    ]
+</script>
+
+</body>
+</html>

@@ -17,6 +17,7 @@
       ],
       "js": [
         "vendor/moment.min.js",
+        "Post.js",
         "functions.js",
         "content.js"
       ]
