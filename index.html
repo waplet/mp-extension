@@ -26,16 +26,51 @@
 
     // lastSeen, tempLastSeen, Now
     var timeTests = [
-        [null, null, momentNow],
+        [null, null, "14:59"],
+        [null, null],
         ["13:59", null],
         ["14:00", null],
-        ["14:01", "14:00"],
-        ["14:05", "14:00"],
+        ["14:01", "14:00", "14:05"],
+        ["14:05", "14:00", "14:09"],
         ["14:35", "14:00"],
         ["14:40", null],
-        ["23:10", null],
-        ["23:20", null]
-    ]
+        ["23:10", null, "23:25"],
+        ["23:20", null, "23:25"],
+        [null, null, "23:25"]
+    ];
+
+    var testWrapperNode = document.getElementById('testArea');
+
+    timeTests.forEach(function (testData) {
+        console.log(testData[2], momentNow.format('HH:mm'));
+        testWrapperNode.appendChild(document.createTextNode("Current time: " + (testData[2] || momentNow.format("HH:mm")) +
+                "; Last Seen time: " + testData[0] +
+                ": Temp Last Seen: " + testData[1]
+        ));
+
+        var posts = [];
+        postTimes.forEach(function (postTime) {
+            var postNode = document.createElement('p');
+            postNode.appendChild(document.createTextNode(postTime));
+
+            var post = new Post(moment(postTime, "HH:mm"), postNode);
+            posts.push(post);
+
+            testWrapperNode.appendChild(postNode);
+        });
+
+        main(
+            posts,
+            function (lastSeenObject) {console.log(lastSeenObject); return true;},
+            (testData[2] ? moment(testData[2], "HH:mm") : momentNow),
+            {
+                w_last_seen: testData[0] ? moment(testData[0], "HH:mm").format("X") : null,
+                w_temp_last_seen: testData[1] ? moment(testData[1], "HH:mm").format("X") : null
+            }
+        );
+
+        testWrapperNode.appendChild(document.createElement('hr'));
+    });
 </script>
 
 </body>
