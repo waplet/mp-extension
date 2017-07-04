@@ -27,6 +27,7 @@
     // lastSeen, tempLastSeen, Now
     var timeTests = [
         [null, null, "14:59"],
+        ["14:59", "14:59", "15:05"],
         [null, null],
         ["13:59", null],
         ["14:00", null],
@@ -61,7 +62,13 @@
 
         main(
             posts,
-            function (lastSeenObject) {console.log(lastSeenObject); return true;},
+            function (lastSeenObject) {
+                testWrapperNode.appendChild(document.createTextNode("New last seen: " + (lastSeenObject.w_last_seen ? moment(lastSeenObject.w_last_seen, "X").format("HH:mm") : '')));
+                testWrapperNode.appendChild(document.createTextNode("; New temp seen: " + (lastSeenObject.w_temp_last_seen ? moment(lastSeenObject.w_temp_last_seen, "X").format("HH:mm") : '')));
+
+                console.log(lastSeenObject);
+                return true;
+            },
             (testData[2] ? moment(testData[2], "HH:mm") : momentNow),
             {
                 w_last_seen: testData[0] ? moment(testData[0], "HH:mm").format("X") : null,

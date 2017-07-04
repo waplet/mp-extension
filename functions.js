@@ -112,11 +112,3 @@ function main(posts, storeFunction, momentNow, lastSeenObject) {
         });
     }
 }
-
-function dttm(hours) {
-    return dateTimeToMoment(hours);
-}
-
-function dateTimeToMoment(hours) {
-    return moment(hours || 0, "HH:mm")
-}
