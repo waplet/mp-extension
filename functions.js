@@ -68,6 +68,7 @@ function getPosts() {
  * @param {int|null} lastSeenObject.w_temp_last_seen
  */
 function main(posts, storeFunction, momentNow, lastSeenObject) {
+    console.log(lastSeenObject);
     // acquired time
     var lastSeenTime = moment(lastSeenObject.w_last_seen || 0, "X");
     var temporaryLastSeenTime = moment(lastSeenObject.w_temp_last_seen, "X") || null;
@@ -106,9 +107,16 @@ function main(posts, storeFunction, momentNow, lastSeenObject) {
             w_temp_last_seen: temporaryLastSeenTime.format("X")
         });
     } else {
-        storeFunction({
-            w_last_seen: timestampNow,
-            w_temp_last_seen: timestampNow
-        });
+        if (!temporaryLastSeenTime && lastSeenTime) {
+            storeFunction({
+                w_last_seen: timestampNow,
+                w_temp_last_seen: lastSeenTime.format("X")
+            })
+        } else {
+            storeFunction({
+                w_last_seen: timestampNow,
+                w_temp_last_seen: timestampNow
+            });
+        }
     }
 }

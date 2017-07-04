@@ -13,31 +13,40 @@
 
 // Need to create tests
 <script>
+//    var postTimes = [
+//        "14:00",
+//        "14:01",
+//        "14:02",
+//        "14:04",
+//        "14:11",
+//        "23:11"
+//    ];
     var postTimes = [
-        "14:00",
-        "14:01",
-        "14:02",
-        "14:04",
-        "14:11",
-        "23:11"
+        0,
+        2,
+        3,
+        4,
+        11,
+        450
     ];
 
-    var momentNow = moment("14:59", "HH:mm");
+//    var momentNow = moment("14:59", "HH:mm");
+    var momentNow = moment();
 
     // lastSeen, tempLastSeen, Now
     var timeTests = [
-        [null, null, "14:59"],
-        ["14:59", "14:59", "15:05"],
         [null, null],
-        ["13:59", null],
-        ["14:00", null],
-        ["14:01", "14:00", "14:05"],
-        ["14:05", "14:00", "14:09"],
-        ["14:35", "14:00"],
-        ["14:40", null],
-        ["23:10", null, "23:25"],
-        ["23:20", null, "23:25"],
-        [null, null, "23:25"]
+        ["15:35", "15:30"]
+//        [null, null],
+//        ["13:59", null],
+//        ["14:00", null],
+//        ["14:01", "14:00", "14:05"],
+//        ["14:05", "14:00", "14:09"],
+//        ["14:35", "14:00"],
+//        ["14:40", null],
+//        ["23:10", null, "23:25"],
+//        ["23:20", null, "23:25"],
+//        [null, null, "23:25"]
     ];
 
     var testWrapperNode = document.getElementById('testArea');
@@ -52,9 +61,9 @@
         var posts = [];
         postTimes.forEach(function (postTime) {
             var postNode = document.createElement('p');
-            postNode.appendChild(document.createTextNode(postTime));
+            postNode.appendChild(document.createTextNode(momentNow.clone().subtract(postTime, "minutes").format("HH:mm")));
 
-            var post = new Post(moment(postTime, "HH:mm"), postNode);
+            var post = new Post(momentNow.clone().subtract(postTime, "minutes"), postNode);
             posts.push(post);
 
             testWrapperNode.appendChild(postNode);
@@ -62,11 +71,13 @@
 
         main(
             posts,
+
             function (lastSeenObject) {
                 testWrapperNode.appendChild(document.createTextNode("New last seen: " + (lastSeenObject.w_last_seen ? moment(lastSeenObject.w_last_seen, "X").format("HH:mm") : '')));
                 testWrapperNode.appendChild(document.createTextNode("; New temp seen: " + (lastSeenObject.w_temp_last_seen ? moment(lastSeenObject.w_temp_last_seen, "X").format("HH:mm") : '')));
 
                 console.log(lastSeenObject);
+                storeLastSeenObject(lastSeenObject);
                 return true;
             },
             (testData[2] ? moment(testData[2], "HH:mm") : momentNow),

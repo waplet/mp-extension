@@ -6,5 +6,5 @@ chrome.storage.sync.get(
         "w_last_seen",
         "w_temp_last_seen"
     ],
-    main.bind(getPosts(), storeLastSeenObject, moment())
+    main.bind(null, getPosts(), storeLastSeenObject, moment())
 );
