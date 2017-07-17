@@ -1,16 +1,23 @@
 /**
  * Created by waplet on 28/07/16.
  */
-chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen"], function(lastSeenObject) {
+
+var config = {
+    'delayType': 'minutes',
+    'delayAmount': 10
+};
+
+chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen", "w_prev_last_seen"], function(lastSeenObject) {
     // acquired time
     var lastSeenTime = moment(lastSeenObject.w_last_seen || 0, "X");
-    var temporaryLastSeenTime = moment(lastSeenObject.w_temp_last_seen, "X") || null;
+    var temporaryLastSeenTime = moment(lastSeenObject.w_temp_last_seen, "X") || null; // is used for 10 minutes
+    var previousLastSeenTime = moment(lastSeenObject.w_prev_last_seen || lastSeenObject.w_last_seen || 0, "X");
 
     // When coming back after was previously set temporary lastSeen,
     // make it as lastSeenTime
     if (temporaryLastSeenTime) {
-        if (moment().diff(temporaryLastSeenTime, 'minutes') <= 10) {
-            lastSeenTime = temporaryLastSeenTime;            
+        if (moment().diff(temporaryLastSeenTime, config.delayType) <= config.delayAmount) {
+            lastSeenTime = previousLastSeenTime;
         }
     }
 
@@ -49,18 +56,21 @@ chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen"], function(lastSeenOb
         // If no new posts
         chrome.storage.sync.set({
             w_last_seen: timestampNow,
-            w_temp_last_seen: timestampNow
+            w_temp_last_seen: null,
+            w_prev_last_seen: null
         });
-    } else if (temporaryLastSeenTime && moment().diff(temporaryLastSeenTime, 'minutes') <= 10) {
+    } else if (temporaryLastSeenTime && moment().diff(temporaryLastSeenTime, config.delayType) <= config.delayAmount) {
         // Maintain same temporaryLastSeenTime
         chrome.storage.sync.set({
             w_last_seen: timestampNow,
-            w_temp_last_seen: temporaryLastSeenTime.format("X")
+            w_temp_last_seen: temporaryLastSeenTime.format("X"),
+            w_prev_last_seen: lastSeenTime.format("X")
         });
     } else {
         chrome.storage.sync.set({
             w_last_seen: timestampNow,
-            w_temp_last_seen: timestampNow
+            w_temp_last_seen: timestampNow,
+            w_prev_last_seen: lastSeenTime.format("X")
         });
     }
 });
