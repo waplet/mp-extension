@@ -13,7 +13,9 @@
     {
       "matches": [
         "*://motopower.lv/",
-        "*://www.motopower.lv/"
+        "*://www.motopower.lv/",
+        "*://motopower.lv/index.php",
+        "*://www.motopower.lv/index.php"
       ],
       "js": [
         "vendor/moment.min.js",
