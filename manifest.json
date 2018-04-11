@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "MotoPower.lv new posts extension",
-  "version": "0.9",
+  "version": "0.10",
   "author": "waplet",
   "permissions": [
     "storage"
@@ -19,6 +19,7 @@
       ],
       "js": [
         "vendor/moment.min.js",
+        "vendor/moment-timezone.min.js",
         "functions.js",
         "content.js"
       ]

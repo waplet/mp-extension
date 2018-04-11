@@ -13,14 +13,14 @@ function parseTime(time)
     var newTimePart = timeParts[1];
     var newDatePart;
     if (timeParts[0] == "Vakar") {
-        newDatePart = moment().subtract(1, "day").format("D MMM");
+        newDatePart = moment().tz('Europe/Riga').subtract(1, "day").format("D MMM");
     } else if(timeParts[0] == "Šodien") {
-        newDatePart = moment().format("D MMM");
+        newDatePart = moment().tz('Europe/Riga').format("D MMM");
     } else {
         newDatePart = timeParts[0];
     }
 
-    return moment(newDatePart + " " + newTimePart, "D MMM HH:mm");
+    return moment.tz(newDatePart + " " + newTimePart, "D MMM HH:mm", true, 'Europe/Riga');
 }
 
 /**
