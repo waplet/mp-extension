@@ -29,18 +29,22 @@ chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen", "w_prev_last_seen"],
         .getElementsByClassName('forum_last_posts')[0]
         .getElementsByTagName('tr');
 
+    var username = getUsername();
     var lastPostsArr = [].slice.call(lastPosts); // hacks to turn HTMLCollection into Array
 
     var wasNewPost = false;
     lastPostsArr.forEach(function (post, index) {
         // getting post time
-        var postTime = post
+        var postData = post
             .getElementsByClassName('date')[0]
-            .innerText.split(" / ")[0];
+            .innerText.split(" / ");
+
+        var postTime = postData[0];
+        var replyUser = postData[1];
 
         postTime = parseTime(postTime);
 
-        if (isNewPost(postTime, lastSeenTime, moment())) {
+        if (isNewPost(postTime, lastSeenTime, moment()) && !isLastReplyFromUser(replyUser, username)) {
             // getting post node
             var postNode = post
                 .getElementsByTagName('td')[0]

@@ -34,3 +34,29 @@ function isNewPost(postTime, lastSeenTime, now)
 {
     return postTime.format("X") > lastSeenTime.format("X") && postTime.format("X") <= now.format("X");
 }
+
+/**
+ * Return true if posts last replied user is equal with current username
+ *
+ * @param {string} replyUser
+ * @param {string} username
+ *
+ * @returns {boolean}
+ */
+function isLastReplyFromUser(replyUser, username)
+{
+    return replyUser.indexOf(username) !== -1;
+}
+
+/**
+ * Returns username
+ *
+ * @example if user not logged in, return "Viesi"
+ *
+ * @returns {string}
+ */
+function getUsername()
+{
+    var usernameText = document.getElementById('top_userinfo').children[0].innerText;
+    return usernameText.slice(0, -1);
+}
