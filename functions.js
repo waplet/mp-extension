@@ -34,3 +34,16 @@ function isNewPost(postTime, lastSeenTime, now)
 {
     return postTime.format("X") > lastSeenTime.format("X") && postTime.format("X") <= now.format("X");
 }
+
+/**
+ * Returns username
+ *
+ * @example if user not logged in, return "Viesi"
+ *
+ * @returns {string}
+ */
+function getUsername()
+{
+    var usernameText = document.getElementById('top_userinfo').children[0].innerText;
+    return usernameText.slice(0, -1);
+}
