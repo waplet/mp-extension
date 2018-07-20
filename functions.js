@@ -36,19 +36,6 @@ function isNewPost(postTime, lastSeenTime, now)
 }
 
 /**
- * Return true if posts last replied user is equal with current username
- *
- * @param {string} replyUser
- * @param {string} username
- *
- * @returns {boolean}
- */
-function isLastReplyFromUser(replyUser, username)
-{
-    return replyUser.indexOf(username) !== -1;
-}
-
-/**
  * Returns username
  *
  * @example if user not logged in, return "Viesi"

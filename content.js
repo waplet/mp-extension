@@ -44,7 +44,7 @@ chrome.storage.sync.get(["w_last_seen", "w_temp_last_seen", "w_prev_last_seen"],
 
         postTime = parseTime(postTime);
 
-        if (isNewPost(postTime, lastSeenTime, moment()) && !isLastReplyFromUser(replyUser, username)) {
+        if (isNewPost(postTime, lastSeenTime, moment()) && replyUser !== username) {
             // getting post node
             var postNode = post
                 .getElementsByTagName('td')[0]
